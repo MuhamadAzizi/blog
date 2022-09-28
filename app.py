@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
-from models import login_auth, get_all_users
+from models import login_auth, get_all_users, add_user, delete_user, get_user_by_id, update_user
 
 import hashlib
 
@@ -25,6 +25,41 @@ def admin_dashboard():
 def admin_users():
     users = get_all_users()
     return render_template('Admin/Users/index.html', users=users)
+
+
+@app.route('/admin/users/add', methods=['POST'])
+def admin_users_add():
+    if request.method == 'POST':
+        id = request.form['id']
+        name = request.form['name']
+        email_address = request.form['email_address']
+        password = request.form['password']
+        user_level = request.form['user_level']
+        add_user(id, name, email_address, password, user_level)
+        return redirect('/admin/users')
+
+
+@app.route('/admin/users/<id>')
+def admin_users_id(id):
+    user = get_user_by_id(id)
+    return render_template('Admin/Users/update.html', user=user)
+
+
+@app.route('/admin/users/<id>/update', methods=['POST'])
+def admin_users_update(id):
+    if request.method == 'POST':
+        name = request.form['name']
+        email_address = request.form['email_address']
+        password = request.form['password']
+        user_level = request.form['user_level']
+        update_user(id, name, email_address, password, user_level)
+        return redirect('/admin/users')
+
+
+@app.route('/admin/users/delete/<id>')
+def admin_users_delete(id):
+    delete_user(id)
+    return redirect('/admin/users')
 
 
 @app.route('/admin/login', methods=['POST', 'GET'])
