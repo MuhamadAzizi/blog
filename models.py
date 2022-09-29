@@ -8,6 +8,32 @@ def start_connection():
     return cnx
 
 
+def get_all_articles():
+    query = (
+        'SELECT articles.id, articles.title, articles.slug, labels.label, articles.thumbnail, articles.date_posted, articles.content, users.name FROM articles INNER JOIN labels ON articles.labels_id = labels.id INNER JOIN users ON articles.users_id = users.id')
+
+    cnx = start_connection()
+    cursor = cnx.cursor()
+    cursor.execute(query)
+
+    result = []
+    for id, title, slug, label, thumbnail, date_posted, content, name in cursor:
+        result.append({
+            'id': id,
+            'title': title,
+            'slug': slug,
+            'label': label,
+            'thumbnail': thumbnail,
+            'date_posted': date_posted,
+            'content': content,
+            'name': name
+        })
+
+    cursor.close()
+    cnx.close()
+    return result
+
+
 def get_all_users():
     query = ('SELECT * FROM users')
 

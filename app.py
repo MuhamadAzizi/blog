@@ -1,13 +1,19 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
-from models import login_auth, get_all_users, add_user, delete_user, get_user_by_id, update_user
+from werkzeug.utils import secure_filename
+from models import login_auth, get_all_users, add_user, delete_user, get_user_by_id, update_user, get_all_articles
 
+import os
 import hashlib
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SESSION_PERMANTENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 Session(app)
 
 
@@ -19,6 +25,12 @@ def index():
 @app.route('/admin')
 def admin_dashboard():
     return render_template('Admin/index.html')
+
+
+@app.route('/admin/articles')
+def admin_articles():
+    articles = get_all_articles()
+    return render_template('Admin/Articles/index.html', articles=articles)
 
 
 @app.route('/admin/users')
