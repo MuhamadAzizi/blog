@@ -10,6 +10,7 @@
 		<ol class="breadcrumb mb-4">
 			<li class="breadcrumb-item active">Manage Articles</li>
 		</ol>
+		<a class="btn btn-primary mb-4" href="/admin/articles/add"><i class="fas fa-plus"></i> Add article</a>
 		{% for article in articles %}
 		<div class="card mb-4">
 			<div class="row g-0">
@@ -22,6 +23,10 @@
 						<h5 class="card-title">{{ article.title }}</h5>
 						<p class="card-text">{{ article.content }}</p>
 						<p class="card-text"><small class="text-muted">{{ article.name }}</small></p>
+						<a class="btn btn-primary btn-sm" href="/admin/articles/edit/{{ article.id }}"><i
+								class="fas fa-edit"></i></a>
+						<a class="btn btn-danger btn-sm" href="/admin/articles/delete/{{ article.id }}"><i
+								class="fas fa-trash"></i></a>
 					</div>
 				</div>
 			</div>

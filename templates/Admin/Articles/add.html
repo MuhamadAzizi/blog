@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} Admin - Add article {% endblock %}
+
+{% block content %}
+{% if session.name %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Manage Users</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Manage Users</li>
+        </ol>
+        <form method="post" action="/admin/articles/add/save" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="inputTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="inputTitle" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="inputSlug" class="form-label">Slug</label>
+                <input type="text" class="form-control" id="inputInput" name="slug">
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Thumbnail</label>
+                <input class="form-control" type="file" id="formFile" name="thumbnail">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="inputDate" value="{{ current_date }}" name="date_posted"
+                    hidden>
+            </div>
+            <div class="mb-3">
+                <select class="form-select" aria-label="Select label" name="label">
+                    <option selected>Label</option>
+                    {% for label in labels %}
+                    <option value="{{ label.id }}">{{ label.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <textarea class="form-control" id="tiny" rows="3" name="content"></textarea>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="inputUser" value="{{ session.id }}" name="user" hidden>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</main>
+{% endif %}
+{% endblock %}

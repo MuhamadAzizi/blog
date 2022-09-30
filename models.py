@@ -8,6 +8,29 @@ def start_connection():
     return cnx
 
 
+def add_article(title, slug, labels_id, thumbnail, date_posted, content, users_id):
+    query = (
+        f"INSERT INTO articles(title, slug, labels_id, thumbnail, date_posted, content, users_id) VALUES('{title}', '{slug}', '{labels_id}', '{thumbnail}', '{date_posted}', '{content}', '{users_id}')")
+
+    cnx = start_connection()
+    cursor = cnx.cursor()
+    cursor.execute(query)
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+
+
+def delete_article(id):
+    query = (f"DELETE FROM articles WHERE id = {id}")
+
+    cnx = start_connection()
+    cursor = cnx.cursor()
+    cursor.execute(query)
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+
+
 def get_all_articles():
     query = (
         'SELECT articles.id, articles.title, articles.slug, labels.label, articles.thumbnail, articles.date_posted, articles.content, users.name FROM articles INNER JOIN labels ON articles.labels_id = labels.id INNER JOIN users ON articles.users_id = users.id')
@@ -27,6 +50,48 @@ def get_all_articles():
             'date_posted': date_posted,
             'content': content,
             'name': name
+        })
+
+    cursor.close()
+    cnx.close()
+    return result
+
+
+def get_article_by_id(id):
+    query = (f"SELECT * FROM articles WHERE id = {id}")
+
+    cnx = start_connection()
+    cursor = cnx.cursor()
+    cursor.execute(query)
+
+    result = {}
+    for id, title, slug, labels_id, thumbnail, date_posted, content, users_id in cursor:
+        result['id'] = id
+        result['title'] = title
+        result['slug'] = slug
+        result['labels_id'] = labels_id
+        result['thumbnail'] = thumbnail
+        result['date_posted'] = date_posted
+        result['content'] = content
+        result['users_id'] = users_id
+
+    cursor.close()
+    cnx.close()
+    return result
+
+
+def get_all_labels():
+    query = ('SELECT * FROM labels')
+
+    cnx = start_connection()
+    cursor = cnx.cursor()
+    cursor.execute(query)
+
+    result = []
+    for id, label in cursor:
+        result.append({
+            'id': id,
+            'label': label
         })
 
     cursor.close()

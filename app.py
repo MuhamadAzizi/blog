@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, flash, render_template, request, redirect, session
 from flask_session import Session
 from werkzeug.utils import secure_filename
-from models import login_auth, get_all_users, add_user, delete_user, get_user_by_id, update_user, get_all_articles
+from models import login_auth, get_all_users, add_user, delete_user, get_user_by_id, update_user, get_all_articles, \
+    get_all_labels, add_article, delete_article, get_article_by_id
 
+import datetime
 import os
 import hashlib
 
@@ -15,6 +17,11 @@ app.config['SESSION_PERMANTENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 Session(app)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
@@ -31,6 +38,47 @@ def admin_dashboard():
 def admin_articles():
     articles = get_all_articles()
     return render_template('Admin/Articles/index.html', articles=articles)
+
+
+@app.route('/admin/articles/add')
+def admin_articles_add():
+    current_date = datetime.datetime.today().strftime('%Y-%m-%d')
+    labels = get_all_labels()
+    return render_template('Admin/Articles/add.html', labels=labels, current_date=current_date)
+
+
+@app.route('/admin/articles/add/save', methods=['POST'])
+def admin_articles_add_save():
+    if request.method == 'POST':
+        title = request.form['title']
+        slug = request.form['slug']
+        label = request.form['label']
+
+        thumbnail = request.files['thumbnail']
+        if thumbnail.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if thumbnail and allowed_file(thumbnail.filename):
+            filename = secure_filename(thumbnail.filename)
+            thumbnail.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        date_posted = request.form['date_posted']
+        content = request.form['content']
+        user = request.form['user']
+        add_article(title, slug, label, 'uploads/' + filename,
+                    date_posted, content, user)
+        return redirect('/admin/articles')
+
+
+@app.route('/admin/articles/edit/<id>')
+def admin_articles_edit(id):
+    article = get_article_by_id(id)
+    return render_template('Admin/Articles/edit.html', article=article)
+
+@app.route('/admin/articles/delete/<id>')
+def admin_articles_delete(id):
+    delete_article(id)
+    return redirect('/admin/articles')
 
 
 @app.route('/admin/users')
@@ -85,6 +133,7 @@ def admin_login():
 
         result = login_auth(email_address, md5.hexdigest())
         if result:
+            session['id'] = result['id']
             session['name'] = result['name']
             session['email_address'] = result['email_address']
             session['user_level'] = result['user_level']
@@ -96,6 +145,7 @@ def admin_login():
 
 @app.route('/admin/logout')
 def admin_logout():
+    session['id'] = None
     session['name'] = None
     session['email_address'] = None
     session['user_level'] = None
