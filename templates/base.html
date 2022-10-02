@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
 
 <head>
     <meta charset="utf-8" />
@@ -9,125 +9,104 @@
     <meta name="author" content="" />
     <title>{% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <!-- <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" /> -->
+    <link href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tiny.cloud/1/wsgdib1n20kwo79g5rmj4ge8y96mj37512nr6vaa8ksveem6/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
+    <style>
+        #modal {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html"><img
-                src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="logo" width="30"
-                class="d-inline-block align-text-top" /> EaziPr</a>
-        <!-- Sidebar Toggle-->
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
-            <i class="fas fa-bars"></i>
-        </button>
-        <!-- Navbar Search-->
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            <div class="input-group">
-                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
-                    aria-describedby="btnNavbarSearch" />
-                <button class="btn btn-primary" id="btnNavbarSearch" type="button">
-                    <i class="fas fa-search"></i>
-                </button>
+<body style="height: 100%;">
+    <div class="Layout Layout--gutter-none Layout--divided" style="height: 100%;">
+        <nav class="Layout-sidebar position-fixed" style="max-width: 360px;">
+            <div class="SideNav-item">eazipr.me</div>
+            <a class="SideNav-item" href="/admin">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                    style="display: inline-block; vertical-align: text-bottom;">
+                    <path fill-rule="evenodd"
+                        d="M8.156 1.835a.25.25 0 00-.312 0l-5.25 4.2a.25.25 0 00-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 01.75-.75h3.5a.75.75 0 01.75.75v5.25h2.75a.25.25 0 00.25-.25V6.23a.25.25 0 00-.094-.195l-5.25-4.2zM6.906.664a1.75 1.75 0 012.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0113.25 15h-3.5a.75.75 0 01-.75-.75V9H7v5.25a.75.75 0 01-.75.75h-3.5A1.75 1.75 0 011 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2h-.001z">
+                    </path>
+                </svg>
+                Dashboard
+            </a>
+            <a class="SideNav-item" href="/admin/articles">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                    style="display: inline-block; vertical-align: text-bottom;">
+                    <path fill-rule="evenodd"
+                        d="M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0114.25 14H1.75A1.75 1.75 0 010 12.25v-8.5zm1.75-.25a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25v-8.5a.25.25 0 00-.25-.25H1.75zM3.5 6.25a.75.75 0 01.75-.75h7a.75.75 0 010 1.5h-7a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h4a.75.75 0 000-1.5h-4z">
+                    </path>
+                </svg>
+                Articles
+            </a>
+            <a class="SideNav-item" href="/admin/users">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                    style="display: inline-block; vertical-align: text-bottom;">
+                    <path fill-rule="evenodd"
+                        d="M10.5 5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm.061 3.073a4 4 0 10-5.123 0 6.004 6.004 0 00-3.431 5.142.75.75 0 001.498.07 4.5 4.5 0 018.99 0 .75.75 0 101.498-.07 6.005 6.005 0 00-3.432-5.142z">
+                    </path>
+                </svg>
+                Users
+            </a>
+
+            <div class="SideNav-item">
+                <!-- <%= octicon "mark-github" , class: "mr-2" , height: 32 %> -->
+                <div class="small">Logged in as:</div>
+                {{ session.name }} ({{ session.user_level }})
             </div>
-        </form>
-        <!-- Navbar-->
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!">Settings</a></li>
-                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">eazipr.me</div>
-                        <a class="nav-link" href="/admin">
-                            <div class="sb-nav-link-icon">
-                                <i class="fas fa-tachometer-alt"></i>
-                            </div>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="/admin/articles">
-                            <div class="sb-nav-link-icon">
-                                <i class="fas fa-newspaper"></i>
-                            </div>
-                            Articles
-                        </a>
-                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
-                            data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="layout-static.html">Static Navigation</a>
-                                <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
-                            </nav>
-                        </div>
-                        <div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
-                            data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                                    data-bs-target="#pagesCollapseAuth" aria-expanded="false"
-                                    aria-controls="pagesCollapseAuth">
-                                    Authentication
-                                    <div class="sb-sidenav-collapse-arrow">
-                                        <i class="fas fa-angle-down"></i>
-                                    </div>
-                                </a>
-                                <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne"
-                                    data-bs-parent="#sidenavAccordionPages">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="login.html">Login</a>
-                                        <a class="nav-link" href="register.html">Register</a>
-                                        <a class="nav-link" href="password.html">Forgot Password</a>
-                                    </nav>
-                                </div>
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                                    data-bs-target="#pagesCollapseError" aria-expanded="false"
-                                    aria-controls="pagesCollapseError">
-                                    Error
-                                    <div class="sb-sidenav-collapse-arrow">
-                                        <i class="fas fa-angle-down"></i>
-                                    </div>
-                                </a>
-                                <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
-                                    data-bs-parent="#sidenavAccordionPages">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="401.html">401 Page</a>
-                                        <a class="nav-link" href="404.html">404 Page</a>
-                                        <a class="nav-link" href="500.html">500 Page</a>
-                                    </nav>
-                                </div>
-                            </nav>
-                        </div>
-                        <a class="nav-link" href="/admin/users">
-                            <div class="sb-nav-link-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            Users
-                        </a>
-                    </div>
+        </nav>
+        <div class="Layout-divider"></div>
+        <div class="Layout-main">
+            <nav class="Header position-sticky top-0    ">
+                <div class="Header-item">
+                    <a class="Header-link d-flex flex-items-center" href="index.html"><img
+                            src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="logo" width="30"
+                            class="mr-2" /> <span>EaziPr</span></a>
                 </div>
-                <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    {{ session.name }} ({{ session.user_level }})
+                <!-- Navbar Search-->
+                <form class="Header-item Header-item--full">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+                            aria-describedby="btnNavbarSearch" />
+                        <span class="input-group-button">
+                            <button class="btn btn-primary" type="button">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                                    style="display: inline-block; vertical-align: text-bottom;">
+                                    <path fill-rule="evenodd"
+                                        d="M11.5 7a4.499 4.499 0 11-8.998 0A4.499 4.499 0 0111.5 7zm-.82 4.74a6 6 0 111.06-1.06l3.04 3.04a.75.75 0 11-1.06 1.06l-3.04-3.04z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <!-- Navbar-->
+                <div class="Header-item mr-0">
+                    <!-- <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#!">Settings</a></li>
+                                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul> -->
                 </div>
             </nav>
-        </div>
-        <div id="layoutSidenav_content">
             {% block content %}
             {% endblock %}
             <footer class="py-4 bg-light mt-auto">
@@ -156,6 +135,23 @@
         tinymce.init({
             selector: 'textarea#tiny'
         });
+
+        var modal = document.getElementById("modal");
+        var btn = document.getElementById("btn-modal");
+        var close = document.getElementById("btn-close");
+
+        let btnClose = function () {
+            modal.style.display = "none";
+        }
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
     </script>
 </body>
 

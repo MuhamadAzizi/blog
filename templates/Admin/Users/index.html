@@ -10,56 +10,68 @@
 		<ol class="breadcrumb mb-4">
 			<li class="breadcrumb-item active">Manage Users</li>
 		</ol>
-		<button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalAddUser"><i
-				class="fas fa-user-plus"></i> Add user</button>
+		<button id="btn-modal" type="button" class="btn btn-primary mb-4"><i class="fas fa-user-plus"></i> Add
+			user</button>
 		<!-- Modal Add User -->
-		<div class="modal fade" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUser" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Add User</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<form method="post" action="/admin/users/add">
-						<div class="modal-body">
-							<div class="form-floating mb-3">
-								<input class="form-control" id="inputName" type="text" name="name" />
-								<label for="inputName">Name</label>
-							</div>
-							<div class="form-floating mb-3">
-								<input class="form-control" id="inputEmail" type="email" name="email_address" />
-								<label for="inputEmail">Email address</label>
-							</div>
-							<div class="form-floating mb-3">
-								<input class="form-control" id="inputPassword" type="password" name="password" />
-								<label for="inputPassword">Password</label>
-							</div>
-							<div class="form-floating mb-3">
-								<select class="form-select" id="inputUserLevel" name="user_level">
-									<option value="Admin">Admin</option>
-									<option value="Writer">Writer</option>
-								</select>
-								<label for="inputUserLevel">User Level</label>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-							<input class="btn btn-primary" type="submit" value="Save changes" />
-						</div>
-					</form>
+		<div class="Box" id="modal" tabindex="-1" aria-labelledby="modalAddUser" aria-hidden="true">
+			<form method="post" action="/admin/users/add">
+				<div class="Box-header d-flex flex-justify-between">
+					<h5 class="Box-title" id="exampleModalLabel">Add User</h5>
+					<button id="btn-close" onclick="btnClose()" type="button" class="btn" aria-label="Close"><i
+							class="fas fa-close"></i></button>
 				</div>
-			</div>
+				<div class="Box-body">
+					<div class="form-group">
+						<div class="form-group-header">
+							<label for="inputName">Name</label>
+						</div>
+						<div class="form-group-body">
+							<input class="form-control" id="inputName" type="text" name="name" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-group-header">
+							<label for="inputEmail">Email address</label>
+						</div>
+						<div class="form-group-body">
+							<input class="form-control" id="inputEmail" type="email" name="email_address" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-group-header">
+							<label for="inputPassword">Password</label>
+						</div>
+						<div class="form-group-body">
+							<input class="form-control" id="inputPassword" type="password" name="password" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-group-header">
+							<label for="inputUserLevel">User Level</label>
+						</div>
+						<div class="form-group-body">
+							<select class="form-select" id="inputUserLevel" name="user_level">
+								<option value="Admin">Admin</option>
+								<option value="Writer">Writer</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="Box-footer d-flex flex-justify-between">
+					<button id="btn-close" onclick="btnClose()" type="button" class="btn">Close</button>
+					<input class="btn btn-primary" type="submit" value="Save changes" />
+				</div>
+			</form>
 		</div>
-		<div class="card mb-4">
-			<div class="card-header">
-				<i class="fas fa-table me-1"></i>
-				Users List
+		<div class="Box mb-4">
+			<div class="Box-header">
+				<h3 class="Box-title"><i class="fas fa-table me-1"></i>
+					Users List</h3>
 			</div>
-			<div class="card-body">
+			<div>
 				<table id="datatablesSimple">
 					<thead>
 						<tr>
-							<th>No</th>
 							<th>Name</th>
 							<th>Email Address</th>
 							<th>Password</th>
@@ -68,10 +80,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% set no = 1 %}
 						{% for user in users %}
 						<tr>
-							<td class="align-middle">{{ no }}</td>
 							<td class="align-middle">{{ user[1] }}</td>
 							<td class="align-middle">{{ user[2] }}</td>
 							<td class="align-middle">{{ user[3] }}</td>
@@ -83,7 +93,6 @@
 										class="fas fa-trash"></i> Delete</a>
 							</td>
 						</tr>
-						{% set no = no + 1 %}
 						{% endfor %}
 					</tbody>
 				</table>
